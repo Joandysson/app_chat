@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app_chat/widgets/messages.dart';
+import 'package:app_chat/widgets/new_message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -38,32 +39,15 @@ class Chat extends StatelessWidget {
           )
         ],
       ),
-      body: StreamBuilder(
-        stream: Firestore.instance.collection('chat').snapshots(),
-        builder: (ctx, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          final documents = snapshot.data.documents;
-          return ListView.builder(
-            itemCount: documents.length,
-            itemBuilder: (ctx, i) => Container(
-              padding: EdgeInsets.all(10),
-              child: Text(documents[i]['text']),
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Firestore.instance.collection('chat').add({
-            'text': 'Apenas um text',
-          });
-        },
+      body: SafeArea(
+        child: Container(
+          child: Column(
+            children: [
+              Expanded(child: Messages()),
+              NewMessage(),
+            ],
+          ),
+        ),
       ),
     );
   }
