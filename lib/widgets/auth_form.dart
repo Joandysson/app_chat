@@ -18,19 +18,19 @@ class _AuthFormState extends State<AuthForm> {
   final AuthData _authData = AuthData();
 
   _submit() {
-    final isValid = _formKey.currentState.validate();
+    bool isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
 
     if (_authData.image == null && _authData.isSignup) {
       Scaffold.of(context).showSnackBar(
         SnackBar(
-          content: Text('imagem não informada'),
+          content: Text('Precisamos da sua foto!'),
           backgroundColor: Theme.of(context).errorColor,
         ),
       );
-
       return;
     }
+
     if (isValid) {
       widget.onSubmit(_authData);
     }
@@ -51,10 +51,13 @@ class _AuthFormState extends State<AuthForm> {
             child: Form(
               key: _formKey,
               child: Column(
-                children: [
+                children: <Widget>[
                   if (_authData.isSignup) UserImagePicker(_handlePickedImage),
                   if (_authData.isSignup)
                     TextFormField(
+                      autocorrect: true,
+                      textCapitalization: TextCapitalization.words,
+                      enableSuggestions: false,
                       key: ValueKey('name'),
                       decoration: InputDecoration(
                         labelText: 'Nome',
@@ -63,36 +66,40 @@ class _AuthFormState extends State<AuthForm> {
                       onChanged: (value) => _authData.name = value,
                       validator: (value) {
                         if (value == null || value.trim().length < 4) {
-                          return 'Nome deve ter no minimo 4 caracteres';
+                          return 'Nome deve ter no mínimo 4 caracteres.';
                         }
                         return null;
                       },
                     ),
                   TextFormField(
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
+                    enableSuggestions: false,
                     key: ValueKey('email'),
                     decoration: InputDecoration(
                       labelText: 'E-mail',
                     ),
+                    onChanged: (value) => _authData.email = value,
                     validator: (value) {
                       if (value == null || !value.contains('@')) {
-                        return 'Forneça um e-mail válido';
+                        return 'Forneça um e-mail válido.';
                       }
                       return null;
                     },
-                    onChanged: (value) => _authData.email = value,
                   ),
                   TextFormField(
                     key: ValueKey('password'),
+                    obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Senha',
                     ),
+                    onChanged: (value) => _authData.password = value,
                     validator: (value) {
                       if (value == null || value.trim().length < 7) {
-                        return 'Senha deve ter no minimo 7 caracteres';
+                        return 'Nome deve ter no mínimo 7 caracteres.';
                       }
                       return null;
                     },
-                    onChanged: (value) => _authData.password = value,
                   ),
                   SizedBox(height: 12),
                   RaisedButton(
@@ -103,7 +110,7 @@ class _AuthFormState extends State<AuthForm> {
                     textColor: Theme.of(context).primaryColor,
                     child: Text(
                       _authData.isLogin
-                          ? 'Criar uma conta?'
+                          ? 'Criar uma nova conta?'
                           : 'Já possui uma conta?',
                     ),
                     onPressed: () {
@@ -111,7 +118,7 @@ class _AuthFormState extends State<AuthForm> {
                         _authData.toggleMode();
                       });
                     },
-                  )
+                  ),
                 ],
               ),
             ),

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-class MessagesBubble extends StatelessWidget {
-  final String message;
-  final bool belongsToMe;
+class MessageBubble extends StatelessWidget {
+  final Key key;
   final String userName;
   final String userImage;
-  final Key key;
+  final String message;
+  final bool belongsToMe;
 
-  MessagesBubble(
+  MessageBubble(
     this.message,
-    this.belongsToMe,
-    this.key,
     this.userName,
     this.userImage,
-  ) : super(key: key);
+    this.belongsToMe, {
+    this.key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class MessagesBubble extends StatelessWidget {
         Row(
           mainAxisAlignment:
               belongsToMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-          children: [
+          children: <Widget>[
             Container(
               decoration: BoxDecoration(
                 color: belongsToMe
@@ -43,22 +43,22 @@ class MessagesBubble extends StatelessWidget {
                 horizontal: 16,
               ),
               margin: EdgeInsets.symmetric(
-                vertical: 15,
+                vertical: 12,
                 horizontal: 8,
               ),
               child: Column(
                 crossAxisAlignment: belongsToMe
                     ? CrossAxisAlignment.end
                     : CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Text(
                     userName,
                     style: TextStyle(
+                      fontWeight: FontWeight.bold,
                       color: belongsToMe
                           ? Colors.black
                           : Theme.of(context).accentTextTheme.headline1.color,
                     ),
-                    textAlign: belongsToMe ? TextAlign.end : TextAlign.start,
                   ),
                   Text(
                     message,
@@ -67,10 +67,11 @@ class MessagesBubble extends StatelessWidget {
                           ? Colors.black
                           : Theme.of(context).accentTextTheme.headline1.color,
                     ),
+                    textAlign: belongsToMe ? TextAlign.end : TextAlign.start,
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
         Positioned(

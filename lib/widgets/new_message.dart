@@ -13,16 +13,19 @@ class _NewMessageState extends State<NewMessage> {
 
   Future<void> _sendMessage() async {
     FocusScope.of(context).unfocus();
-    final user = await FirebaseAuth.instance.currentUser();
-    final userData =
-        await Firestore.instance.collection('users').document(user.uid).get();
+    final user = FirebaseAuth.instance.currentUser;
+    final userData = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
 
-    Firestore.instance.collection('chat').add({
+    print(userData);
+    FirebaseFirestore.instance.collection('chat').add({
       'text': _enteredMessage,
       'createdAt': Timestamp.now(),
       'userId': user.uid,
-      'userName': userData['name'],
-      'userImage': userData['imageUrl'],
+      'userName': userData.get('name'),
+      'userImage': userData.get('imageUrl'),
     });
 
     _controller.clear();
@@ -32,9 +35,11 @@ class _NewMessageState extends State<NewMessage> {
   Widget build(BuildContext context) {
     return Container(
       child: Row(
-        children: [
+        children: <Widget>[
           Expanded(
             child: TextField(
+              autocorrect: true,
+              textCapitalization: TextCapitalization.sentences,
               controller: _controller,
               decoration: InputDecoration(labelText: 'Enviar mensagem...'),
               onChanged: (value) {
@@ -45,8 +50,9 @@ class _NewMessageState extends State<NewMessage> {
             ),
           ),
           IconButton(
-              icon: Icon(Icons.send),
-              onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage)
+            icon: Icon(Icons.send),
+            onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage,
+          ),
         ],
       ),
     );
